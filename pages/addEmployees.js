@@ -4,11 +4,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import {Url } from "../constants/Global";
 import moment from 'moment';
+import { useRouter } from "next/router";
 
  function Employee() {
    const [roles ,setRoles] = useState([]);
     const [values, setValues] = useState([]);
-  
+    const router = useRouter();
 
     const [addemployees, setEmployees] = useState({
         LastName: '',
@@ -172,3 +173,4 @@ import moment from 'moment';
       )
   }
   export default Employee;
+  
