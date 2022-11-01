@@ -1,144 +1,147 @@
 import axios from "axios";
-import React, { useState,useEffect } from "react";
+import { Table, TextInput, Button, SelectField, Pane, majorScale, TagInput } from 'evergreen-ui'
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "../styles/UpdateEmployee.module.css";
 import moment from 'moment';
-import {Url } from "../constants/Global";
+import { Url } from "../constants/Global";
 
-import {TextInput,Button,SelectField,TagInput} from 'evergreen-ui'
+
+
 function AddQuestions() {
-  const router = useRouter();
- 
-   const [types ,setTypes] = useState([]);
-   
-  const [addQuestions, setQuestions] = useState({
-    name: "",
-    image_url: "",
-    question_type_id: "",
-    is_delete:"0",
-    is_active:"1",
-    created: moment().format( 'YYYY-MM-DD HH:mm:ss'),
-    answers1:"",
-    currectans:"",
-  
+  const [ansvalues, setAnsvalues] = useState([]);
+  const [cansvalues, setCansvalues] = useState([]);
+  const [types, setTypes] = useState([]);
 
- 
- });
- let options = types.map(function (option) {
-  return { value: option.id, label: option.name };
-})
- 
-  const handleClick = async (e) => {
+  const [addQuestions, setQuestions] = useState({
+    questions: "",
+    q_type_id: "",
+    created: moment().format('YYYY-MM-DD HH:mm:ss'),
+    currectanswer: "",
+    ansoptions: [],
+
+  });
+  let options = types.map(function (option) {
+    return { value: option.id, label: option.name };
+  })
+
+  const handleClick = async(e) => {
     e.preventDefault();
+    console.log('*************');
+
     console.log(addQuestions);
     let data = await axios.post(
-        Url +`/api/questions`,    
-        addQuestions
-    );
-    
-    if (data.data) router.push("/Questions");
-    setQuestions({
-      name: "",
-      image_url: "",
-      question_type_id: "",
-      is_delete:"0",
-      is_active:"1",
-      created: moment().format( 'YYYY-MM-DD HH:mm:ss'),
-    
-      answers1:"",
-      currectans:""
-     
-        });
-  };
+      Url +`/api/questions`,    
+      addQuestions
+  );
+  if (data.data) router.push("/Questions");
+  setQuestions({
+    questions: "",
+    q_type_id: "",
+    created: moment().format('YYYY-MM-DD HH:mm:ss'),
+    currectanswer: "",
+    ansoptions: [],
+   
+      });
+
+  }
+  const tagoptionshandleClick = (e) => {
+  
+    setAnsvalues(e)
+    setQuestions({ ...addQuestions, ansoptions: e })
+  }
 
 
-
- 
-  useEffect(function(){
+  useEffect(function () {
     axios
-    .get(Url +"/api/question_type")
-    .then((response) => setTypes(response.data))
+      .get(Url + "/api/question_type")
+      .then((response) => setTypes(response.data))
 
-   },[]);
+  }, []);
   return (
     <>
-   
-      <div className={styles.addform}>
-        <h1 className={styles.h1}>ENTER QUESTIONS</h1>
-        <form >
-          <div>
-         
-            <br/>
-           
-            <SelectField
-        label="Select Questiom type"
-        required
-        name="question_type_id"
-        value={addQuestions.question_type_id}
-        onChange={e => setQuestions({ ...addQuestions, question_type_id: e.target.value }) }
-      >
-       {types.map((type) =>(
-                <option key={type.id} value={type.id}>
-                    {type.name}
-                    
-                </option>
-            ))}
-                    
-          
-        
-      </SelectField>
-        <label>Enter the Question</label> 
-        <br/>   
-      <TextInput name="text-input-name" placeholder="Name.." 
-        onChange={(e) => setQuestions({ ...addQuestions, name: e.target.value })}
-        value={addQuestions.name}
-        />
-            
-            <br/>
-            
-              <h1 className={styles.h1}>ENTER ANSWERS</h1>
+      <Pane display="flex" alignItems="center" marginX={majorScale(2)}>
+       
+        <Table>
+          <Table.Head>Enter new Questions</Table.Head>
+          <Table.Body height={540}>
 
-              
-           </div>
-           <TagInput
-      inputProps={{ placeholder: 'Add Answers...' }}
-      value={addQuestions.answers1}
-    
-      tagProps={{
-        color: 'red',
-      }}
-      onChange={(e) => {
-        setQuestions({...addQuestions, name: e.target.value})
-      }}
-    />
-    <br/><br/>
+            <Table.Row>
+              <Table.TextCell>Employee Type</Table.TextCell>
+              <Table.TextCell>
+                <SelectField
+                  required
+                  width="100%"
+                  defaultValue="Select"
+                  name="q_type_id"
+                  value={addQuestions.q_type_id}
+                  onChange={e => setQuestions({ ...addQuestions, q_type_id: e.target.value })}
+                >
+                  {types.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
 
-<TagInput
-      inputProps={{ placeholder: 'Add Answers...' }}
-      value={addQuestions.currectans}
-     
-      tagProps={{
-        color: 'red',
-      }}
-      onChange={(e) => {
-        setQuestions({...addQuestions, name: e.target.value})
-      }}
-    />
-   
-         
-          
-          <div>
-          <Button type="submit" className={styles.button} onClick={handleClick}>
-              Submit
-            </Button>
-           
-          </div>
-          </form>
+                    </option>
+                  ))}
+                </SelectField>
 
-      </div>
+              </Table.TextCell>
+
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Enter the Questions ?</Table.TextCell>
+              <Table.TextCell>
+                <TextInput name="text-input-Questions" placeholder="What ?.." width="100%"
+                  onChange={(e) => setQuestions({ ...addQuestions, questions: e.target.value })}
+                  value={addQuestions.questions}
+                />
+
+              </Table.TextCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Enter the Currect answer.</Table.TextCell>
+              <Table.TextCell>
+
+                <TextInput name="text-input-Currect-answer" placeholder="Enter Currect-answer.." width="100%"
+                  onChange={(e) => setQuestions({ ...addQuestions, currectanswer: e.target.value })}
+                  value={addQuestions.currectanswer}
+                />
+
+              </Table.TextCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Enter the Options answer.</Table.TextCell>
+              <Table.TextCell>
+                <TagInput width="100%"
+                  tagProps={(value) => {
+                    return { color: 'Blue' }
+                  }}
+                  inputProps={{ placeholder: 'Add optional answer...' }}
+                  values={ansvalues}
+                  onChange={tagoptionshandleClick}
+                />
+
+              </Table.TextCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell><Button marginRight={16} appearance="primary" onClick={handleClick} >
+                Submit
+              </Button> </Table.TextCell>
+              <Table.TextCell><Button marginRight={16} appearance="primary">
+                Cancle
+              </Button>  </Table.TextCell>
+
+            </Table.Row>
+
+          </Table.Body>
+
+        </Table>
+      </Pane>
     </>
-
   );
 }
+
+
+
 
 export default AddQuestions;
