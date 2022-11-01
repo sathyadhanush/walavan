@@ -50,6 +50,7 @@ import { useRouter } from "next/router";
       .then((response) => setRoles(response.data))
      
      },[]);
+     
     return(
         <>
  
@@ -64,6 +65,7 @@ import { useRouter } from "next/router";
         label="A controlled text input field"
         required
         name="emp_role_id"
+        
         description="This is a description."
         value={addemployees.emp_role_id}
         onChange={e => setEmployees({ ...addemployees, emp_role_id: e.target.value }) }
@@ -108,6 +110,7 @@ import { useRouter } from "next/router";
         <Table.TextCell>
         <TextInput name="text-input-DOB" placeholder="DOB.." 
         type="date"
+        width="165px"
         onChange={(e) => setEmployees({ ...addemployees, DOB: e.target.value})}
         value={addemployees.DOB}
         InputLabelProps={{
@@ -121,7 +124,7 @@ import { useRouter } from "next/router";
        uuid
         </Table.TextCell>
         <Table.TextCell>
-        <TextInput name="text-input-fname" placeholder="uuid.." 
+        <TextInput name="text-input-uuid" placeholder="uuid.." 
         onChange={(e) => setEmployees({ ...addemployees, uuid: e.target.value })}
         value={addemployees.uuid}
         />

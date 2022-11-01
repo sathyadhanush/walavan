@@ -6,11 +6,12 @@ import styles from "../styles/AddEmployee.module.css";
 import Layout from '../components/Layout';
 import {Url } from "../constants/Global"
 import moment from 'moment';
-import TextField from '@material-ui/core/TextField';
+import {TextInput,SelectField,TagInput} from 'evergreen-ui';
 
 function EditEmployees({ employeesUpdateData }) {
   console.log("employeesid", employeesUpdateData);
   const router = useRouter();
+  const [values, setValues] = useState([]);
   const [roles ,setRoles] = useState([]);
   const [addEmployees, setEmployees] = useState({
     LastName: "",
@@ -24,7 +25,7 @@ function EditEmployees({ employeesUpdateData }) {
   useEffect(() => {
     setEmployees(employeesUpdateData[0]);
   }, [employeesUpdateData]);
-  const onSubmit = async (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
     let data = await axios.put(
       Url +`/api/employees/${employeesUpdateData[0].id}`,
@@ -42,11 +43,13 @@ function EditEmployees({ employeesUpdateData }) {
     });
   };
 
-  const handleChange = (e) => {
-    const value = e.target.value;
-    console.log("value", value);
-    setEmployees({ ...addEmployees, [e.target.name]: value });
-  };
+  const taghandleClick = (e) =>  {
+    console.log(e);
+        setValues(e)
+        console.log(e.length);  
+        
+        
+} 
   useEffect(function(){
     axios
     .get(Url +"/api/employeerole")
@@ -59,49 +62,25 @@ function EditEmployees({ employeesUpdateData }) {
     <label className={styles.label}>EMPLOYEES</label>
       <div className={styles.addform}>
         <h1 className={styles.h1}>EDIT EMPLOYEES</h1>
-        <form onSubmit={onSubmit}>
+        <form >
         <div>
-          <TextField fullWidth
-         className={styles.TextField}
-                autoComplete="FirstName"
-                name="FirstName"
-                required
-                variant="outlined"
-                type="text"
-                label="FirstName"
-                autoFocus
-                onChange={handleChange}
-              value={addEmployees.FirstName}
+          <TextInput name="text-input-fname" placeholder="Firstname.." 
+        onChange={(e) => setEmployees({ ...addEmployees, FirstName: e.target.value })}
+        value={addEmployees.FirstName}
               />
           </div>
           <br/>
           <div>
-          <TextField fullWidth
-         className={styles.TextField}
-                autoComplete="LastName"
-                name="LastName"
-                required
-                variant="outlined"
-                type="text"
-                label="LastName"
-                autoFocus
-                onChange={handleChange}
-              value={addEmployees.LastName}
+          <TextInput TextInput name="text-input-lname" placeholder="Lastname.." 
+        onChange={(e) => setEmployees({ ...addEmployees, LastName: e.target.value })}
+        value={addEmployees.LastName}
               />
           </div>
           <br/>
           <div>
-          <TextField fullWidth
-         className={styles.TextField}
-                autoComplete="uuid"
-                name="uuid"
-                required
-                variant="outlined"
-                type="text"
-                label="uuid"
-                autoFocus
-                onChange={handleChange}
-              value={addEmployees.uuid}
+          <TextInput name="text-input-uuid" placeholder="uuid.." 
+        onChange={(e) => setEmployees({ ...addEmployees, uuid: e.target.value })}
+        value={addEmployees.uuid}
                 
               />
           </div>
@@ -110,17 +89,9 @@ function EditEmployees({ employeesUpdateData }) {
         
           <br/>
           <div>
-          <TextField fullWidth
-         className={styles.TextField}
-                autoComplete="email_id"
-                name="email_id"
-                required
-                variant="outlined"
-                type="emil_id"
-                label="Email_Id"
-                autoFocus
-                onChange={handleChange}
-                value={addEmployees.email_id}
+          <TextInput name="text-input-email" placeholder="Emailid.."
+        onChange={(e) => setEmployees({ ...addEmployees, email_id:e.target.value})}
+        value={addEmployees.email_id}
               />
           </div>
           <br/>
@@ -130,44 +101,42 @@ function EditEmployees({ employeesUpdateData }) {
       width: '500px'
     }}>
           <br/>
-          <TextField fullWidth
-         className={styles.TextField}
-         autoComplete="DOB"
-         label="Date of Birth"
-         name="DOB"
-         type="date"
-         autoFocus
-         onChange={handleChange}
-         value={addEmployees.DOB}
-         InputLabelProps={{
-           shrink: true,
-         }}
-
+          <TextInput name="text-input-DOB" placeholder="DOB.." 
+        type="date"
+        onChange={(e) => setEmployees({ ...addEmployees, DOB: e.target.value})}
+        value={addEmployees.DOB}
+        InputLabelProps={{
+          shrink: true,
+        }}
               />
+  
             </div>
             <div>
             <br/>
           </div>
           <br/>
           <div>
-          <select
-              type="text"
-              className={styles.input}
-              name="emp_role_id"
-              placeholder="Emp Role ID"
-              onChange={handleChange}
-              value={addEmployees.emp_role_id}
-            >
-                {roles.map((role) =>(
-                <option value={role.name} key={role.id}>
+          <SelectField
+        label="Select ther employee"
+        required
+        name="emp_role_id"
+       width="500px"
+        value={addEmployees.emp_role_id}
+        onChange={e => setEmployees({ ...addEmployees, emp_role_id: e.target.value }) }
+      >
+       {roles.map((role) =>(
+                <option key={role.id} value={role.id}>
                     {role.name}
                     
                 </option>
             ))}
-            </select>
+                    
+          
+        
+      </SelectField>
           </div>
           <div>
-            <button type="submit" className={styles.button}>
+            <button type="submit" className={styles.button}  onClick={handleClick}>
               Submit
             </button>
             <button className={styles.button}>

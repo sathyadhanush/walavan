@@ -16,8 +16,8 @@ const menuItems = [
 
  
   { id: 1, label: "Employees", icon: UsersIcon, link: "/Employees"},
+  { id: 2, label: "Questions", icon: UsersIcon, link: "/Questions"},
  
-
 
   
 ];
