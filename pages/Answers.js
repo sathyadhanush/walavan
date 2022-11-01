@@ -1,21 +1,24 @@
 import Layout from '../components/Layout'
-import Employeesaction from "./employeesAction";
-import {SortIcon} from "evergreen-ui";
-import Checkbox from "evergreen-ui";
+import Answersaction from "./answersAction";
+import SortIcon from "@mui/icons-material/ArrowDownward";
+import Checkbox from "@mui/material/Checkbox";
 import React, {useState, useEffect} from 'react';
 import DataTable from 'react-data-table-component';
+import Grid from '@mui/material/Grid';
 import Link from "next/link";
 import axios from "axios";
 import styles from "../styles/EmployeeList.module.css";
+import {Url } from "../constants/Global";
+
 import { useRouter } from "next/router";
-function Employee() {
+function Home() {
  
-  const deleteEmployees = async (id) => {
+  const deleteAnswers = async (id) => {
    
-    let text = "Delete Employees List ";
+    let text = "Delete Answers  List ";
     if (confirm(text) == true) {
-      let fetchData = await axios.delete(`http://localhost:3000/api/employees/${id}`);
-      router.push("/Employees");
+      let fetchData = await axios.delete(Url+`/api/answers/${id}`);
+      router.push("/Answers ");
     } else {
       console.log( "You canceled!")
     }
@@ -25,65 +28,42 @@ function Employee() {
 
 const columns = [
   {
-      name: 'Employees ID',
+      name: 'Answers  ID',
       selector: row => row.id,
-      width: '100px',
+      width: '200px',
       sortable: true,
   },
 
  
   {
-    name: 'First Name',
-    selector: row => row.FirstName,
-    width: '115px',
+    name: ' Answers',
+    selector: row => row.answers,
+    width: '205px',
     sortable: true,
 },
 {
-    name: ' Last Name',
-    selector: row => row.LastName,
-    width: '115px',
+    name: ' Question  ID',
+    selector: row => row.question_id,
+    width: '120px',
     sortable: true,
 },
 {
-    name: 'UUID',
-    selector: row => row.uuid,
-    width: '200px',
-    sortable: true
-},
-{
-    name: 'DOB',
-    selector: row => row.DOB,
-    width: '200px',
-    sortable: true
-},
-{
-    name: 'Emp Role ID',
-    selector: row => row.emp_role_id,
-    width: '116px',
-    sortable: true
-},
-{
-    name: 'Email _ID',
-    selector: row => row.email_id,
-    width: '190px',
-    sortable: true
-},
-{
-    name: 'Created',
-    selector: row => row.created,
-    width: '195px',
+    name: 'Iscurrect',
+    selector: row => row.iscurrect,
+    width: '300px',
     sortable: true
 },
   {
         name: 'Edit',
+        width: '300px',
         button: true,
-        cell: (row) => <div className={styles.update}><Link  href={`/employees/${row.id}`}>Update</Link></div>,
+        cell: (row) => <div className={styles.update}><Link  href={`/answers/${row.id}`}>Update</Link></div>,
     },
   {
         name: 'Delete',
-        
+        width: '300px',
         button: true,
-        cell: (row) => <div className={styles.delete} onClick={() => deleteEmployees(row.id)}>DELETE</div>,
+        cell: (row) => <div className={styles.delete} onClick={() => deleteAnswers(row.id)}>DELETE</div>,
     },
 
 
@@ -96,7 +76,7 @@ const selectableRowsComponentProps = { indeterminate: isIndeterminate };
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
   const [totalRows, setTotalRows] = useState();
-  const [perPage, setPerPage] = useState("10");
+  const [perPage, setPerPage] = useState("2");
   const router = useRouter();
 
   useEffect(() => {
@@ -105,14 +85,14 @@ const selectableRowsComponentProps = { indeterminate: isIndeterminate };
   }, [perPage])
 
   const fetchData = async (page,limit) => {
-    fetch(`http://localhost:3000/api/employees?page=${page}&limit=${limit}`,{
+    fetch(Url+`/api/answers?page=${page}&limit=${limit}`,{
       method:'get',
     })
       .then(res => res.json())
       .then(
         (result) => {
           setIsLoaded(true);
-          setItems(result.employeesData);
+          setItems(result.answersData);
           setTotalRows(result.totalPages);
         },
         (error) => {
@@ -132,10 +112,11 @@ const selectableRowsComponentProps = { indeterminate: isIndeterminate };
   return (
     <div>
        <Layout>
+       <Grid item xs={12} sm={8} md={5}  elevation={6} square>
        <div class="rdt_Pagination">
 
 <DataTable
-title="Employees"
+title="Answers"
   columns={columns}
   data={items}
   pagination
@@ -155,8 +136,8 @@ title="Employees"
 />
 
 </div>
-      <center><Employeesaction/></center>
-
+      <center><Answersaction/></center>
+      </Grid>
    
     </Layout>
     </div>
@@ -165,4 +146,4 @@ title="Employees"
 
 
 
-export default Employee;
+export default Home;

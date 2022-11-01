@@ -95,7 +95,7 @@ const updateEmployees = async (req, res) => {
       console.log("putrequest", employeesData);
       employeesData = await executeQuery(
         `update employees set LastName=?,FirstName=?,uuid=?,DOB=?,emp_role_id=?,email_id=? where id=${id}`,
-        [LastName, FirstName, uuid, DOB, emp_role_id, email_id, created]
+        [LastName, FirstName, uuid, DOB,  parseInt(emp_role_id), email_id, created]
       );
       res.status(200).json(employeesData);
     } else {
