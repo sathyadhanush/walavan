@@ -35,13 +35,13 @@ const getAllQuestions = async (req, res) => {
    
     console.log("********")
     let questionsData = await executeQuery(
-      `select name as questions,question_type_id as q_type_id from questions where id=${id}`,
+      `select name as questions,question_type_id as q_type_id , '' as currectanswer ,'' as ansoptions from questions where id=${id}`,
       []
     );
     console.log(questionsData);
     console.log("setEditQuestions*****",questionsData[0].questions);
     
- 
+   
     let correctanswerData = await executeQuery(
       `select answers as currectanswer  from answers where question_id=${id} and iscurrect=1`,
       []
@@ -50,12 +50,23 @@ const getAllQuestions = async (req, res) => {
       `select answers as ansoptions  from answers where question_id=${id} and iscurrect=0`,
       []
     );
-
-    questionsData.push(correctanswerData);
-    // questionsData.push(answersData);
-    console.log("correctanswerdata*********",correctanswerData);
-    console.log("questionsData*****",questionsData);
+    questionsData[0].currectanswer=correctanswerData[0].currectanswer;
     console.log("answersData*****",answersData);
+    console.log("answersData*****",answersData.length);
+  let ansoptions = [];
+    for (let idx in answersData) {
+      ansoptions.push(answersData[idx].ansoptions);
+      console.log(`${answersData[idx].ansoptions} has index ${idx}`);
+  }
+    
+   
+
+    questionsData[0].ansoptions=ansoptions;
+   // questionsData.push(correctanswerData);
+    // questionsData.push(answersData);
+    console.log("ansoptions*********",ansoptions);
+    console.log("questionsData*****",questionsData);
+  
     if (questionsData.length > 0)
      res.status(200).json(questionsData);
     else {

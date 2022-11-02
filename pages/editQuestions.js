@@ -7,7 +7,7 @@ import Layout from '../components/Layout'
 
 function EditQuestions({ questionsUpdateData }) {
   console.log("questionsid", questionsUpdateData);
- 
+  const [ansvalues, setAnsvalues] = useState([]);
   const router = useRouter();
   const [types ,setTypes] = useState([]);
   const [editQuestions, setEditQuestions] = useState({
@@ -23,7 +23,11 @@ function EditQuestions({ questionsUpdateData }) {
     answersData:[],
   });
 
+  const tagoptionshandleClick = (e) => {
   
+    setAnsvalues(e)
+    setEditQuestions({ ...editQuestions, ansoptions: e })
+  }
   useEffect(() => {
     setEditQuestions(questionsUpdateData[0]);
   
@@ -104,6 +108,19 @@ function EditQuestions({ questionsUpdateData }) {
 
               </Table.TextCell>
             </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Edit the Currect answer.</Table.TextCell>
+              <Table.TextCell>
+              <TagInput width="100%"
+                  tagProps={(value) => {
+                    return { color: 'Blue' }
+                  }}
+                  inputProps={{ placeholder: 'Add optional answer...' }}
+                  values={editQuestions.ansoptions}
+                  onChange={tagoptionshandleClick}
+                />
+                </Table.TextCell>
+                </Table.Row>
             <Table.Row>
               <Table.TextCell><Button marginRight={16} appearance="primary" onClick={handleClick} >
                 Submit
