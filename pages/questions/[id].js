@@ -1,18 +1,18 @@
 import EditQuestions from "../editQuestions";
 
-function updateQuestions({ questions,answers }) {
-  console.log("questions,answers", questions,answers);
-  return <EditQuestions questionsUpdateData={questions}  answersUpdateData={answers} />;
+function updateQuestions({ questions }) {
+  console.log("questions,answers", questions);
+  return <EditQuestions questionsUpdateData={questions}  />;
 
 }
 
 export async function getServerSideProps({ params }) {
   const res = await fetch(`http://localhost:3000/api/questions/${params.id}`);
-  const res1 = await fetch(`http://localhost:3000/api/answers/${params.id}`);
+
   const questions = await res.json();
-  const answers = await res1.json();
+  console.log("questions=====", questions);
   return {
-    props: { questions,answers },
+    props: { questions },
   };
 }
 

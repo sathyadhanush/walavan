@@ -87,7 +87,7 @@ const selectableRowsComponentProps = { indeterminate: isIndeterminate };
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
   const [totalRows, setTotalRows] = useState();
-  const [perPage, setPerPage] = useState("2");
+  const [perPage, setPerPage] = useState("10");
   const router = useRouter();
 
   useEffect(() => {

@@ -1,74 +1,51 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import styles from "../styles/UpdateEmployee.module.css";
-import Layout from '../components/Layout'
-import { Radio } from '@nextui-org/react';
-import TextField from '@material-ui/core/TextField';
+import { Table, TextInput, Button, SelectField, Pane, majorScale, TagInput } from 'evergreen-ui'
 import {Url } from "../constants/Global"
+import Layout from '../components/Layout'
 
-function EditQuestions({ questionsUpdateData,answersUpdateData }) {
+function EditQuestions({ questionsUpdateData }) {
   console.log("questionsid", questionsUpdateData);
-  console.log("answersid", answersUpdateData);
+ 
   const router = useRouter();
   const [types ,setTypes] = useState([]);
   const [editQuestions, setEditQuestions] = useState({
-    name: "",
-    question_type_id: "",
-    is_delete:"",
-    is_active:"",
+    questions: "",
+    q_type_id: "",
     created: "",
+    currectanswer:"",
+    ansoptions:[],
   });
-  const [editAnswers, setEditAnswers] = useState({
-    answers:"",
-   
+  const [writenQuestions, setWritenQuestions] = useState({
+    correctanswerdata: [],
+    questionsData: [],
+    answersData:[],
   });
+
   
   useEffect(() => {
     setEditQuestions(questionsUpdateData[0]);
-    setEditAnswers(answersUpdateData[0]);
-  }, [questionsUpdateData][answersUpdateData]);
-  const onSubmit = async (e) => {
+  
+  }, [questionsUpdateData]);
+
+  const handleClick = async (e) => {
     e.preventDefault();
     let data = await axios.put(
       Url+`/api/questions/${questionsUpdateData[0].id}`,
       editQuestions
     );
-    e.preventDefault();
-    let data1 = await axios.put(
-      Url+`/api/answers/${answersUpdateData[0].id}`,
-      editAnswers
-    );
+ 
     if (data.data) router.push("/Questions");
     setEditQuestions({
-      name: "",
-      question_type_id: "",
-      is_delete:"",
-      is_active:"",
+      questions: "",
+      q_type_id: "",
       created: "",
-     
+      currectanswer:"",
+      ansoptions:[],
         });
-        if (data1.data) router.push("/Questions");
-        setEditAnswers({
-      answers:"",
-   
-     
-        });
+        
   };
-  
-
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-  
-    console.log("value", value);
-   
-  
-    setEditQuestions({ ...editQuestions, [e.target.name]: value });
-    setEditAnswers({ ...editAnswers, [e.target.name]: value });
-  };
- 
   useEffect(function(){
     axios
     .get( Url+`/api/question_type`)
@@ -78,66 +55,69 @@ function EditQuestions({ questionsUpdateData,answersUpdateData }) {
   return (
     <>
     <Layout>
-    <label className={styles.label}>QUESTIONS</label>
-      <div className={styles.addform}>
-        <h1 className={styles.h1}>EDIT QUESTIONS</h1>
-        <form onSubmit={onSubmit}>
-          <div>
-          <select
-              type="text"
-              className={styles.input}
-              name="question_type_id"
-              placeholder="Question Type ID"
-              onChange={handleChange}
-              value={editQuestions.question_type_id}
-            >
-                {types.map((type) =>(
-                <option value={type.name} key={type.id}>
-                    {type.name}
-                   
-                </option>
-            ))}
-            </select>
-          <TextField fullWidth
-         className={styles.TextField}
-                autoComplete="name"
-                name="name"
-                required
-                variant="outlined"
-                type="text"
-                label="Name"
-                autoFocus
-                onChange={handleChange}
-              value={editQuestions.name}
-              />
-          </div>
-          <div>
-          <h1 className={styles.h1}>EDIT ANSWERS</h1>
-          
-      <TextField fullWidth
-         className={styles.TextField}
-                autoComplete="answers"
-                name="answers"
-                required
-                variant="outlined"
-                type="text"
-                label="Answers"
-                autoFocus
-                onChange={handleChange}
-                value={editAnswers.answers}
-              /> 
-           </div>
-         
-          <div>
-            <button type="submit" className={styles.button}>
-              Submit
-            </button>
-            <button className={styles.button}>
-              <Link href={`/Questions`}>Go Back</Link>
-            </button>
-          </div>
-        </form>
-      </div>
+     <Pane display="flex" alignItems="center" marginX={majorScale(2)}>
+       
+       <Table>
+         <Table.Head>Edit new Questions</Table.Head>
+         <Table.Body height={540}>
+
+           <Table.Row>
+             <Table.TextCell>Employee Type</Table.TextCell>
+             <Table.TextCell>
+             <SelectField
+                  required
+                  width="100%"
+                  defaultValue="Select"
+                  name="q_type_id"
+                  value={editQuestions.q_type_id}
+                  onChange={e => setEditQuestions({ ...editQuestions,q_type_id: e.target.value })}
+                >
+                  {types.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+
+                    </option>
+                  ))}
+                </SelectField>
+
+              </Table.TextCell>
+
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Edit the Questions ?</Table.TextCell>
+              <Table.TextCell>
+                <TextInput name="text-input-Questions" placeholder="What ?.." width="100%"
+                  onChange={(e) => setEditQuestions({ ...editQuestions, questions: e.target.value })}
+                  value={editQuestions.questions}
+                />
+
+              </Table.TextCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Edit the Currect answer.</Table.TextCell>
+              <Table.TextCell>
+
+                <TextInput name="text-input-Currect-answer" placeholder="Enter Currect-answer.." width="100%"
+                  onChange={(e) => setEditQuestions({ ...editQuestions, currectanswer: e.target.value })}
+                  value={editQuestions.currectanswer}
+                />  
+
+              </Table.TextCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell><Button marginRight={16} appearance="primary" onClick={handleClick} >
+                Submit
+              </Button> </Table.TextCell>
+              <Table.TextCell><Button marginRight={16} appearance="primary">
+                Cancel
+              </Button>  </Table.TextCell>
+
+            </Table.Row>
+
+          </Table.Body>
+
+        </Table>
+      </Pane>
       </Layout>
     </>
   );
