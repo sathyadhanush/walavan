@@ -70,13 +70,13 @@ const saveQuestions = async (req, res) => {
       console.log(result1);
 
 
-    const { name, image_url, question_type_id, is_delete, is_active, created } = result;
-    const { answers1,currectans } = result1;
+    const { questions, q_type_id, created } = result;
+    const { currectanswer,ansoptions } = result1;
    
     let { error } = questionsValidation(result);
-    let { error1 } = answersValidation(result1);
-
-    if (error,error1) {
+    // let { error1 } = answersValidation(result1);
+error=false;
+    if (error) {
              console.log("post request2");
       res.status(400).json(error.details[0].message);
 
@@ -85,46 +85,29 @@ const saveQuestions = async (req, res) => {
       console.log("post request");
       let questionsData = await executeQuery(
         "insert into questions(name,image_url, question_type_id, is_delete, is_active, created) values(?,?,?,?,?,?)",
-        [name,image_url, question_type_id, 1, 1, created]
+        [questions,"", q_type_id, 1, 1, created]
       );
       console.log("currectans");
 
 
   
-      if (currectans=="1")
-      {
-        let answersData1 = await executeQuery(
+        let correctanswerData1 = await executeQuery(
           "insert into answers(answers, question_id, iscurrect) values(?,?,?)",
-          [answers1, questionsData.insertId, "1"]
+          [currectanswer, questionsData.insertId, "1"]
         );
     
-      }
-      else if  (currectans=="2")
-      {
+       
+        var arrayLength = ansoptions.length;
+        for (var i = 0; i < arrayLength; i++) {
+            console.log(ansoptions[i]);
+            //Do something
+        
         let answersData1 = await executeQuery(
           "insert into answers(answers, question_id, iscurrect) values(?,?,?)",
-          [answers1, questionsData.insertId, "0"]
+          [ansoptions[i], questionsData.insertId, "0"]
         );
-     
-      }
-      else if (currectans=="3")
-      {
-        let answersData1 = await executeQuery(
-          "insert into answers(answers, question_id, iscurrect) values(?,?,?)",
-          [answers1, questionsData.insertId, "0"]
-        );
+        }
       
-      }
-
-      else if (currectans=="4")
-      {
-        let answersData1 = await executeQuery(
-          "insert into answers(answers, question_id, iscurrect) values(?,?,?)",
-          [answers1, questionsData.insertId, "0"]
-        );
-  
-      }
-
 
            console.log("**************currectans");
 
