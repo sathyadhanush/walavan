@@ -11,19 +11,32 @@ function AddQuestions() {
   const [ansvalues, setAnsvalues] = useState([]);
   const [cansvalues, setCansvalues] = useState([]);
   const [types, setTypes] = useState([]);
+<<<<<<< HEAD
   const router = useRouter();
+=======
+
+>>>>>>> 30630383695e09efe973ad2ba8169ab8c64f1c5f
   const [addQuestions, setQuestions] = useState({
     questions: "",
     q_type_id: "",
     created: moment().format('YYYY-MM-DD HH:mm:ss'),
     currectanswer: "",
     ansoptions: [],
+<<<<<<< HEAD
 
   });
   let options = types.map(function (option) {
     return { value: option.id, label: option.name };
   })
 
+=======
+
+  });
+  let options = types.map(function (option) {
+    return { value: option.id, label: option.name };
+  })
+
+>>>>>>> 30630383695e09efe973ad2ba8169ab8c64f1c5f
   const handleClick = async(e) => {
     e.preventDefault();
     console.log('*************');
@@ -64,6 +77,7 @@ function AddQuestions() {
         <Table>
           <Table.Head>Enter new Questions</Table.Head>
           <Table.Body height={540}>
+<<<<<<< HEAD
 
             <Table.Row>
               <Table.TextCell>Employee Type</Table.TextCell>
@@ -120,6 +134,64 @@ function AddQuestions() {
                   onChange={tagoptionshandleClick}
                 />
 
+=======
+
+            <Table.Row>
+              <Table.TextCell>Employee Type</Table.TextCell>
+              <Table.TextCell>
+                <SelectField
+                  required
+                  width="100%"
+                  defaultValue="Select"
+                  name="q_type_id"
+                  value={addQuestions.q_type_id}
+                  onChange={e => setQuestions({ ...addQuestions, q_type_id: e.target.value })}
+                >
+                  {types.map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+
+                    </option>
+                  ))}
+                </SelectField>
+
+              </Table.TextCell>
+
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Enter the Questions ?</Table.TextCell>
+              <Table.TextCell>
+                <TextInput name="text-input-Questions" placeholder="What ?.." width="100%"
+                  onChange={(e) => setQuestions({ ...addQuestions, questions: e.target.value })}
+                  value={addQuestions.questions}
+                />
+
+              </Table.TextCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Enter the Currect answer.</Table.TextCell>
+              <Table.TextCell>
+
+                <TextInput name="text-input-Currect-answer" placeholder="Enter Currect-answer.." width="100%"
+                  onChange={(e) => setQuestions({ ...addQuestions, currectanswer: e.target.value })}
+                  value={addQuestions.currectanswer}
+                />
+
+              </Table.TextCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.TextCell>Enter the Options answer.</Table.TextCell>
+              <Table.TextCell>
+                <TagInput width="100%"
+                  tagProps={(value) => {
+                    return { color: 'Blue' }
+                  }}
+                  inputProps={{ placeholder: 'Add optional answer...' }}
+                  values={ansvalues}
+                  onChange={tagoptionshandleClick}
+                />
+
+>>>>>>> 30630383695e09efe973ad2ba8169ab8c64f1c5f
               </Table.TextCell>
             </Table.Row>
             <Table.Row>
