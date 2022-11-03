@@ -35,7 +35,7 @@ const getAllQuestions = async (req, res) => {
    
     console.log("********")
     let questionsData = await executeQuery(
-      `select name as questions,question_type_id as q_type_id , '' as currectanswer ,'' as ansoptions from questions where id=${id}`,
+      `select name as questions,question_type_id as q_type_id , '' as currectanswer ,'' as ansoptions,${id} as id from questions where id=${id}`,
       []
     );
     console.log(questionsData);
@@ -64,6 +64,7 @@ const getAllQuestions = async (req, res) => {
     questionsData[0].ansoptions=ansoptions;
    // questionsData.push(correctanswerData);
     // questionsData.push(answersData);
+    
     console.log("ansoptions*********",ansoptions);
     console.log("questionsData*****",questionsData);
   
@@ -159,12 +160,15 @@ const updateQuestions = async (req, res) => {
   console.log("********************************put request1");
 
   let id = req.query.id;
-  console.log("id", id);
+  console.log("id", req.query.id);
   const result = req.body;
   const result1 = req.body;
-  const { questions, q_type_id, created} = result;
-    const { currectanswer } =result1;
-
+  const { questions, q_type_id, created} = req.body;
+    const { currectanswer } =req.body;
+    const { ansoptions } =req.body;
+    console.log("req.body", req.body);
+    console.log("current answer********",currectanswer);
+    console.log(" answer********",ansoptions);
 
 let { error } = questionsValidation(result);
     // let { error1 } = answersValidation(result1);
@@ -175,42 +179,46 @@ res.status(400).json(error.details[0].message);
 
 }
   try {
-    let questionsData = await executeQuery(
-      "select name as questions,question_type_id as q_type_id from questions where id=?",
-      [id]
-    );
-    let correctanswerData = await executeQuery(
-      "select answers as currectanswer  from answers where question_id=? and iscurrect=1",
-      [id]
-    );
-    let answersData = await executeQuery(
-      "select answers as ansoptions  from answers where question_id=? and iscurrect=0",
-      [id]
-    );
-    if (questionsData.length > 0 & answersData.length > 0) {
-      console.log("put request3", questionsData);
-      console.log("putrequest3", answersData);
-      questionsData = await executeQuery(
+
+   
+    let   questionsData = await executeQuery(
         `update questions set name=?,image_url=?, question_type_id=?, is_delete=?, is_active=?, created=? where id=${id}`,
         [questions,"", q_type_id, 1, 1, created]
       );
      
  console.log("currectans");
     
-       let correctanswerData1 = await executeQuery(
-        `update answers set answers=?,question_id=?,iscurrect=? where id=${id}`,
-        [ currectanswer]
+       let deleteanswer = await executeQuery(
+        `delete from  answers  where question_id=${id}`
+      
       );
+
+      let correctanswerData1 = await executeQuery(
+        "insert into answers(answers, question_id, iscurrect) values(?,?,?)",
+        [currectanswer, id, "1"]
+      );
+  
+     
+      var arrayLength = ansoptions.length;
+      for (var i = 0; i < arrayLength; i++) {
+          console.log(ansoptions[i]);
+          //Do something
+      
+      let answersData1 = await executeQuery(
+        "insert into answers(answers, question_id, iscurrect) values(?,?,?)",
+        [ansoptions[i], id, "0"]
+      );
+      }
 
 
       console.log("**************currectans");
 
 
-      res.status(200).json(questionsData);
+      // res.status(200).json("question was updated successfullly");
     
-      res.status(400).json(`questions not found on this id=${id}`);
+   
     }
-  } catch (err) {
+   catch (err) {
     console.log("put request4",err);
     res.status(400).json(err);
   }

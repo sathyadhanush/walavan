@@ -25,6 +25,7 @@ function EditEmployees({ employeesUpdateData }) {
   useEffect(() => {
     setEmployees(employeesUpdateData[0]);
   }, [employeesUpdateData]);
+  
   const handleClick = async (e) => {
     e.preventDefault();
     let data = await axios.put(

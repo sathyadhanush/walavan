@@ -29,11 +29,12 @@ const getAllEmployees = async (req, res) => {
 const getEmployeesById = async (req, res, next) => {
   let id = req.query.id;
   try {
-    console.log("employees by id");
+    console.log("employees by id",id);
     let employeesData = await executeQuery(
       `select * from employees where id=${id}`,
       []
     );
+    console.log(employeesData);
     if (employeesData.length > 0) res.status(200).json(employeesData);
     else {
       next(new ErrorHandler(`no employees found with this id ${id}`, 404));
